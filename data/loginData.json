@@ -1,0 +1,11 @@
+{
+    "valid":{
+        "email":"mussadiq@faba.naibme.com",
+        "password":"C0mplexp@@s"
+    },
+
+    "Invalid":{
+        "email":"coy@choosedigital.com.au",
+        "password":"456465456"
+    }
+}
