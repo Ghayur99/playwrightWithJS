@@ -33,8 +33,14 @@ export default defineConfig({
 
   globalSetup: './helpers/global-setup.js',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+
+  timeout: 60000, // ⏳ 1 minute max per test or hook
+  expect: {
+    timeout: 30000
+  },
   use: {
     baseURL: envConfig.baseURL,
+    // storageState: 'auth.json',   // ✅ Use the saved session
     headless: false,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

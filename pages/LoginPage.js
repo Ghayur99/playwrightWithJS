@@ -11,7 +11,7 @@ export class LoginPage {
   }
 
   async navigateToLogin() {
-    await this.page.goto('/auth/login');
+    await this.page.goto('/');
   }
 
   async enterEmail(email) {
@@ -26,7 +26,7 @@ export class LoginPage {
     await this.page.click(this.loginButton);
   }
 
-    async verifydashboardPage() {
+  async verifydashboardPage() {
     await this.page.click(this.loginButton);
   }
 
