@@ -67,7 +67,7 @@ export async function Login({ baseURL, email, password, storageFile = 'auth.json
   }
 
   // ✅ Step 2: Do UI login if no valid session
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: !!process.env.CI });
   const context = await browser.newContext();
   const page = await context.newPage();
 
