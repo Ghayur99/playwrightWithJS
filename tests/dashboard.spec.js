@@ -17,7 +17,7 @@ test.describe('Dashboard Tests', () => {
   test.use({ storageState: 'auth.json' });
   test('should land on dashboard after login', async ({ page }) => {
     const loginPage = new LoginPage(page);
-    await page.goto("https://stg.app.get-diamonds.com");  // use your frontend base URL here
+    await page.goto(process.env.BASE_URL);;  // use your frontend base URL here
 
     await expect(page.locator('div h1')).toHaveText('Upload Your Stock in Three Easy Steps');
     // OR

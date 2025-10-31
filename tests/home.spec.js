@@ -14,7 +14,6 @@ test.describe('Tests with stored session', () => {
   });
 
   test.use({ storageState: 'auth.json' });
-
   test('test 2 (uses login session)', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await page.goto(process.env.BASE_URL);
@@ -35,4 +34,5 @@ test.describe('Tests without stored session', () => {
     await loginPage.clickLogin();
     await loginPage.verifyH1Text('Upload Your Stock in Three Easy Steps', true);
   });
+
 });
