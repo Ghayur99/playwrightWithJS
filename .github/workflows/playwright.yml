@@ -1,41 +1,67 @@
 name: Playwright Tests
 
 on:
+  # 🔁 Automatically run when code is pushed or a PR is opened
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
+  # ▶️ Allow manual runs with environment choice
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment to run tests on'
+        required: true
+        default: 'stage'
+        type: choice
+        options:
+          - stage
+          - qa
+          - prod
 
 jobs:
   test:
-    timeout-minutes: 60
+    name: Run Playwright Tests (${{ github.event.inputs.environment || 'stage' }})
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+
     env:
+      # Use environment input or fallback to 'stage'
+      ENV: ${{ github.event.inputs.environment || 'stage' }}
       BASE_URL: ${{ secrets.BASE_URL }}
       USER_EMAIL: ${{ secrets.USER_EMAIL }}
       USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
-      ENV: 'stage'     # optional
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
+      - name: 🎭 Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test
+      - name: 🧪 Run Playwright Tests
+        run: |
+          echo "🏗️ Running Playwright tests on environment: $ENV"
+          npx playwright test --workers=1
+        env:
+          ENV: ${{ env.ENV }}
+          BASE_URL: ${{ env.BASE_URL }}
+          USER_EMAIL: ${{ env.USER_EMAIL }}
+          USER_PASSWORD: ${{ env.USER_PASSWORD }}
 
-      - uses: actions/upload-artifact@v4
+      - name: 📊 Upload Playwright Report
         if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ env.ENV }}
           path: playwright-report/
           retention-days: 30
