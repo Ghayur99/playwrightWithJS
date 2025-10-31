@@ -29,9 +29,9 @@ jobs:
     env:
       # Use environment input or fallback to 'stage'
       ENV: ${{ github.event.inputs.environment || 'stage' }}
-      BASE_URL: ${{ secrets.BASE_URL }}
-      USER_EMAIL: ${{ secrets.USER_EMAIL }}
-      USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+      BASE_URL: ${{ secrets.BASE_URL_STAGE }}
+      USER_EMAIL: ${{ secrets.USER_EMAIL_STAGE }}
+      USER_PASSWORD: ${{ secrets.USER_PASSWORD_STAGE }}
 
     steps:
       - name: 🧩 Checkout repository
