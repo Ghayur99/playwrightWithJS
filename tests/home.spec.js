@@ -14,7 +14,7 @@ test.describe('Tests with stored session', () => {
   });
 
   test.use({ storageState: 'auth.json' });
-  test('test 2 (uses login session)', async ({ page }) => {
+  test('Sanity - test 2 (uses login session)', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await page.goto(process.env.BASE_URL);
     await loginPage.verifyH1Text('Upload Your Stock in Three Easy Steps', true);
@@ -25,7 +25,7 @@ test.describe('Tests with stored session', () => {
 test.describe('Tests without stored session', () => {
   test.use({ storageState: undefined }); // or null
 
-  test('Login with valid credentials', async ({ page }) => {
+  test('Regression - Login with valid credentials', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await page.goto(process.env.BASE_URL);
     await loginPage.navigateToLogin();

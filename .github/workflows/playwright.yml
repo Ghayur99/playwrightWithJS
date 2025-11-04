@@ -1,13 +1,10 @@
 name: Playwright Tests
 
 on:
-  # 🔁 Automatically run when code is pushed or a PR is opened
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-
-  # ▶️ Allow manual runs with environment choice
   workflow_dispatch:
     inputs:
       environment:
@@ -18,19 +15,21 @@ on:
         options:
           - stage
           - dev
+      test_type:
+        description: 'Select test suite to run'
+        required: true
+        default: 'sanity'
+        type: choice
+        options:
+          - sanity
+          - smoke
+          - regression
 
 jobs:
   test:
-    name: Run Playwright Tests (${{ github.event.inputs.environment || 'stage' }})
+    name: Run Playwright ${{ github.event.inputs.test_type }} Tests (${{ github.event.inputs.environment || 'stage' }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
-    env:
-      # Use environment input or fallback to 'stage'
-      ENV: ${{ github.event.inputs.environment || 'stage' }}
-      BASE_URL: ${{ secrets.BASE_URL_STAGE }}
-      USER_EMAIL: ${{ secrets.USER_EMAIL_STAGE }}
-      USER_PASSWORD: ${{ secrets.USER_PASSWORD_STAGE }}
 
     steps:
       - name: 🧩 Checkout repository
@@ -49,18 +48,18 @@ jobs:
 
       - name: 🧪 Run Playwright Tests
         run: |
-          echo "🏗️ Running Playwright tests on environment: $ENV"
-          npx playwright test --workers=1
+          echo "🏗️ Running ${{ github.event.inputs.test_type }} tests on environment: $ENV"
+          npx playwright test -g "${{ github.event.inputs.test_type }}" --workers=1
         env:
-            ENV: ${{ github.event.inputs.environment || 'stage' }}
-            BASE_URL: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_DEV || secrets.BASE_URL_STAGE }}
-            USER_EMAIL: ${{ github.event.inputs.environment == 'dev' && secrets.USER_EMAIL_DEV || secrets.USER_EMAIL_STAGE }}
-            USER_PASSWORD: ${{ github.event.inputs.environment == 'dev' && secrets.USER_PASSWORD_DEV || secrets.USER_PASSWORD_STAGE }}
+          ENV: ${{ github.event.inputs.environment || 'stage' }}
+          BASE_URL: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_DEV || secrets.BASE_URL_STAGE }}
+          USER_EMAIL: ${{ github.event.inputs.environment == 'dev' && secrets.USER_EMAIL_DEV || secrets.USER_EMAIL_STAGE }}
+          USER_PASSWORD: ${{ github.event.inputs.environment == 'dev' && secrets.USER_PASSWORD_DEV || secrets.USER_PASSWORD_STAGE }}
 
       - name: 📊 Upload Playwright Report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ env.ENV }}
+          name: playwright-report-${{ github.event.inputs.environment }}-${{ github.event.inputs.test_type }}
           path: playwright-report/
           retention-days: 30

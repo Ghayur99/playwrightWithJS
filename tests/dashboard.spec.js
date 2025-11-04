@@ -15,7 +15,7 @@ test.describe('Dashboard Tests', () => {
   });
 
   test.use({ storageState: 'auth.json' });
-  test('should land on dashboard after login', async ({ page }) => {
+  test('Smoke - should land on dashboard after login', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await page.goto(process.env.BASE_URL);
     console.log('Current basUrl:', process.env.BASE_URL);
