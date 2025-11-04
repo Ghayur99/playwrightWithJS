@@ -33,6 +33,7 @@ test.describe('Tests without stored session', () => {
     await loginPage.enterPassword(loginData.valid.password);
     await loginPage.clickLogin();
     await loginPage.verifyH1Text('Upload Your Stock in Three Easy Steps', true);
+    await page.locator(loginPage.emailField).isHidden();
   });
 
 });

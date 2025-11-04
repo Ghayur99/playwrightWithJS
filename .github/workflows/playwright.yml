@@ -17,8 +17,7 @@ on:
         type: choice
         options:
           - stage
-          - qa
-          - prod
+          - dev
 
 jobs:
   test:
@@ -53,10 +52,10 @@ jobs:
           echo "🏗️ Running Playwright tests on environment: $ENV"
           npx playwright test --workers=1
         env:
-          ENV: ${{ env.ENV }}
-          BASE_URL: ${{ env.BASE_URL }}
-          USER_EMAIL: ${{ env.USER_EMAIL }}
-          USER_PASSWORD: ${{ env.USER_PASSWORD }}
+            ENV: ${{ github.event.inputs.environment || 'stage' }}
+            BASE_URL: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_DEV || secrets.BASE_URL_STAGE }}
+            USER_EMAIL: ${{ github.event.inputs.environment == 'dev' && secrets.USER_EMAIL_DEV || secrets.USER_EMAIL_STAGE }}
+            USER_PASSWORD: ${{ github.event.inputs.environment == 'dev' && secrets.USER_PASSWORD_DEV || secrets.USER_PASSWORD_STAGE }}
 
       - name: 📊 Upload Playwright Report
         if: ${{ !cancelled() }}
