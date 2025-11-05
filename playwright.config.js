@@ -57,7 +57,6 @@ export default defineConfig({
   reporter: 'html',
 
   globalSetup: './helpers/global-setup.js',
-
   timeout: 30000,
   expect: {
     timeout: 30000,
@@ -69,6 +68,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'on-first-retry',
+    storageState: 'auth.json',
   },
 
   projects: [

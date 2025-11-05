@@ -49,7 +49,7 @@ jobs:
       - name: 🧪 Run Playwright Tests
         run: |
           echo "🏗️ Running ${{ github.event.inputs.test_type }} tests on environment: $ENV"
-          npx playwright test -g "${{ github.event.inputs.test_type }}" --workers=1
+          npx playwright test -g "${{ github.event.inputs.test_type }}" --workers=4
         env:
           ENV: ${{ github.event.inputs.environment || 'stage' }}
           BASE_URL: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_DEV || secrets.BASE_URL_STAGE }}
