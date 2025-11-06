@@ -10,8 +10,12 @@ export class LoginPage {
     this.h1Heading = 'div h1';
   }
 
+   async GetEmailField() {
+    return this.page.getByRole('textbox', { name: 'Email' });
+  }
+
   async navigateToLogin() {
-    await this.page.goto('/');
+    await this.page.goto(process.env.BASE_URL + 'auth/login');
   }
 
   async enterEmail(email) {

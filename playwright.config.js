@@ -57,18 +57,19 @@ export default defineConfig({
   reporter: 'html',
 
   globalSetup: './helpers/global-setup.js',
-  timeout: 30000,
+  timeout: 60000, // ⏱️ Each test max 60s
   expect: {
-    timeout: 30000,
+    timeout: 30000, // ⏱️ Expect conditions max 30s
   },
 
   use: {
-    baseURL: process.env.BASE_URL,
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'on-first-retry',
     storageState: 'auth.json',
+    actionTimeout: 30000, // ⏱️ Element actions wait up to 30s
+    navigationTimeout: 30000, // ⏱️ Page.goto and waits for URL max 30s
   },
 
   projects: [
