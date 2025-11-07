@@ -24,6 +24,7 @@ on:
           - sanity
           - smoke
           - regression
+          - api
 
 jobs:
   test:
@@ -48,13 +49,32 @@ jobs:
 
       - name: 🧪 Run Playwright Tests
         run: |
-          echo "🏗️ Running ${{ github.event.inputs.test_type }} tests on environment: $ENV"
-          npx playwright test -g "${{ github.event.inputs.test_type }}" --workers=4
+          echo "🏗️ Running ${{ github.event.inputs.test_type }} tests on environment: ${{ github.event.inputs.environment }}"
+          
+          export ENV=${{ github.event.inputs.environment }}
+          
+          if [ "${{ github.event.inputs.test_type }}" = "api" ]; then
+            echo "🔗 Running API test suite..."
+            npx playwright test tests/api --workers=1
+          else
+            echo "🎭 Running UI test suite..."
+            npx playwright test -g "${{ github.event.inputs.test_type }}" --workers=4
+          fi
         env:
           ENV: ${{ github.event.inputs.environment || 'stage' }}
+          
+          # --- Common Base URLs ---
           BASE_URL: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_DEV || secrets.BASE_URL_STAGE }}
+          BASE_URL_API: ${{ github.event.inputs.environment == 'dev' && secrets.BASE_URL_API_DEV || secrets.BASE_URL_API_STAGE }}
+
+          # --- Auth Credentials ---
           USER_EMAIL: ${{ github.event.inputs.environment == 'dev' && secrets.USER_EMAIL_DEV || secrets.USER_EMAIL_STAGE }}
           USER_PASSWORD: ${{ github.event.inputs.environment == 'dev' && secrets.USER_PASSWORD_DEV || secrets.USER_PASSWORD_STAGE }}
+
+          # --- Optional Settings ---
+          HEADLESS: true
+          RETRIES: 1
+          TRACE: on-first-retry
 
       - name: 📊 Upload Playwright Report
         if: ${{ !cancelled() }}
