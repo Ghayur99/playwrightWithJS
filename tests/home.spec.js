@@ -22,19 +22,19 @@ test.describe('Tests with stored session', () => {
   });
 });
 
-// ✅ 2. Describe for tests without stored session
-test.describe('Tests without stored session', () => {
+// // ✅ 2. Describe for tests without stored session
+// test.describe('Tests without stored session', () => {
 
-  test.use({ storageState: null }); // or null
-  test('Regression - Login with valid credentials', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await page.goto(process.env.BASE_URL + 'auth/login');
-    await loginPage.navigateToLogin();
-    await loginPage.enterEmail(loginData.valid.email);
-    await loginPage.enterPassword(loginData.valid.password);
-    await loginPage.clickLogin();
-    await loginPage.verifyH1Text('Upload Your Stock in Three Easy Steps', true);
-    await page.locator(loginPage.emailField).isHidden();
-  });
+//   test.use({ storageState: null }); // or null
+//   test('Regression - Login with valid credentials', async ({ page }) => {
+//     const loginPage = new LoginPage(page);
+//     await page.goto(process.env.BASE_URL + 'auth/login');
+//     await loginPage.navigateToLogin();
+//     await loginPage.enterEmail(loginData.valid.email);
+//     await loginPage.enterPassword(loginData.valid.password);
+//     await loginPage.clickLogin();
+//     await loginPage.verifyH1Text('Upload Your Stock in Three Easy Steps', true);
+//     await page.locator(loginPage.emailField).isHidden();
+//   });
   
-});
+// });

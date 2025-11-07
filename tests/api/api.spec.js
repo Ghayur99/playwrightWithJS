@@ -1,26 +1,23 @@
 // tests/api/users.spec.js
 import { test, expect } from '@playwright/test';
 import { ApiClient } from '../../helpers/apiClient.js';
+import fs from 'fs';
+import path from 'path';
 
 test.describe('User Management API', () => {
   let api, authToken;
 
   test.beforeAll(async () => {
-    // Step 1: Login to get token
-    console.log(process.env.BASE_URL_API)
-    const loginClient = new ApiClient(process.env.BASE_URL_API);
-    await loginClient.init();
+    // Simple: read token from auth.json (first origin/localStorage token)
+    try {
+      const authPath = path.resolve(process.cwd(), 'auth.json');
+      const auth = JSON.parse(fs.readFileSync(authPath, 'utf8'));
+      authToken = auth?.origins?.[0]?.localStorage?.find(e => e.name === 'token')?.value;
+      console.log('Auth token loaded:', !!authToken);
+    } catch (e) {
+      console.warn('auth.json not found or invalid, continuing without token');
+    }
 
-    const loginRes = await loginClient.post('dashboard/users/login', {
-      email: process.env.USER_EMAIL,
-      password: process.env.USER_PASSWORD,
-    });
-
-    // ✅ Token is directly in the root of response
-    authToken = loginRes.body?.token;
-
-    console.log('✅ Auth token:', authToken);
-    // Step 2: Initialize authorized client
     api = new ApiClient(process.env.BASE_URL_API, authToken);
     await api.init();
   });
