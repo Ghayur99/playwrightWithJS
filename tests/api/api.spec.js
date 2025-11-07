@@ -8,7 +8,12 @@ test.describe('User Management API', () => {
   let api, authToken;
 
   test.beforeAll(async () => {
-    // Simple: read token from auth.json (first origin/localStorage token)
+    /*
+    reading the auth token from auth.json file so that token is reused across tests
+    otherwise if we login via API each time, a new token is generated invalidating 
+    the previous one and causing test failures for UI tests that rely on the same token 
+    coming from auth.json
+    */
     try {
       const authPath = path.resolve(process.cwd(), 'auth.json');
       const auth = JSON.parse(fs.readFileSync(authPath, 'utf8'));
